@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:telesuivi_covid_19/screens/LoginScreen.dart';
 import './screens/home.dart';
-import 'screens/LoginScreen.dart';
+import './screens/LoginScreen.dart';
+import 'screens/LoginCard.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -14,7 +16,10 @@ class MyApp extends StatelessWidget {
         primaryColorLight: Color.fromRGBO(41, 163, 163, 1),            
       ),
       title: 'Télésuivi covid-19',      
-      home: LogIn(),
+      home: LogInCard(),
+     routes:{
+       LoginScreen.pageRoute:(_)=>LoginScreen()
+     }
     );
   }
 }

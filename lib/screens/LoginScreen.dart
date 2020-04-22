@@ -1,140 +1,336 @@
 import 'package:flutter/material.dart';
-import 'package:telesuivi_covid_19/widget/loginClipper.dart';
+import 'package:telesuivi_covid_19/screens/LoginCard.dart';
 
-class LogIn extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  static const pageRoute = './loginScreen';
+
   @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void dispose() {
+    _addresseFocusNode.dispose();
+    _confPassFocusNode.dispose();
+    _passFocusNode.dispose();
+    _telFocusNode.dispose();
+    super.dispose();
+  }
+
+  final _passwordController = TextEditingController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  AuthMode _authMode;
+  Map<String, String> _authData = {
+    'email': '',
+    'password': '',
+    'tel': '',
+    'nom': '',
+  };
+  bool _isLoading = false;
+  final _telFocusNode = FocusNode();
+  final _addresseFocusNode = FocusNode();
+  final _passFocusNode = FocusNode();
+  final _confPassFocusNode = FocusNode();
+  var init = false;
+  @override
+  void didChangeDependencies() {
+    if (!init) _authMode = ModalRoute.of(context).settings.arguments;
+    setState(() {
+      init = false;
+    });
+    super.didChangeDependencies();
+  }
+
   Widget build(BuildContext context) {
+    final _deviceSize = MediaQuery.of(context).size;
     return Scaffold(
-        body: Stack(
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            boxShadow: [BoxShadow(
-              blurRadius: 10,
-              offset:Offset(10,0),
-              color: Colors.black38
-            )],
-          color: Theme.of(context).accentColor,
-          ),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-        ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: ClipPath(
-            clipper: LightClipper(),
-            child: Container(
-              color: Colors.white,
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: ClipPath(
-            clipper: DarkClipper(),
-            child: Container(
-              color: Theme.of(context).primaryColor,
-              height: MediaQuery.of(context).size.height ,
-              width: MediaQuery.of(context).size.width,
-            ),
-          ),
-        ),
-        Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  SizedBox(height: 30),
-                  Icon(Icons.location_on,
-                      size: 70, color: Theme.of(context).accentColor),
-                  SizedBox(height: 20),
-                  Text(
-                    'TELESUIVI COVID-19',
-                    style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontSize: 36,
-                        color: Theme.of(context).primaryColorLight),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Minister of Public Health\n#Stay_Home',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontSize: 24,
-                        color: Theme.of(context).accentColor),
-                  ),
-                ],
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 50.0, right: 50, bottom: 55),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+      backgroundColor: Theme.of(context).primaryColor,
+      body: Container(
+        margin: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Row(
                   children: <Widget>[
-                    InkWell(
-                      onTap: () {},
-                      splashColor: Colors.grey,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black54,
-                                  blurRadius: 20,
-                                  offset: Offset(10, 10))
-                            ]),
-                        child: Text(
-                          'Register',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontFamily: 'Roboto',
-                              fontSize: 36,
-                              color: Theme.of(context).primaryColorLight),
+                    IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios,
+                          color: Theme.of(context).accentColor,
                         ),
-                      ),
+                        onPressed: () => Navigator.of(context).maybePop()),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.location_on,
+                      size: 40,
+                      color: Theme.of(context).accentColor,
                     ),
-                    SizedBox(height: 10),
-                    InkWell(
-                      splashColor: Colors.grey,
-                      onTap: () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Theme.of(context).primaryColor,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black54,
-                                  blurRadius: 20,
-                                  offset: Offset(10, 10))
-                            ]),
-                        child: Text(
-                          'Login',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontFamily: 'Roboto',
-                              fontSize: 36,
-                              letterSpacing: 1.2,
-                              color: Theme.of(context).primaryColorLight),
-                        ),
-                      ),
+                    Text(
+                      'TELESUIVI COVID-19',
+                      style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 20,
+                          height: 2,
+                          fontWeight: FontWeight.w100,
+                          color: Theme.of(context).primaryColorLight),
                     )
                   ],
                 ),
-              ),
-            ],
+                SizedBox(height: 11),
+                Container(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          color: Theme.of(context).accentColor,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          _authMode == AuthMode.Register ? 'Register' : 'Login',
+                          style: TextStyle(
+                              fontSize: 40,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                if (_authMode == AuthMode.Register)
+                  TextFormField(
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_addresseFocusNode);
+                    },
+                    enabled: _authMode == AuthMode.Register,
+                    decoration: InputDecoration(
+                      labelText: ' User name',
+                      labelStyle:
+                          TextStyle(color: Theme.of(context).accentColor),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(20),
+                          gapPadding: 0),
+                      contentPadding: const EdgeInsets.all(10),
+                      fillColor: Colors.white,
+                      filled: true,
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null) return 'taper le nom';
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _authData['nom'] = value;
+                    },
+                  ),
+                const SizedBox(height: 10),
+                if (_authMode == AuthMode.Register)
+                  TextFormField(
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_telFocusNode);
+                    },
+                    focusNode: _addresseFocusNode,
+                    textInputAction: TextInputAction.next,
+                    textAlign: TextAlign.end,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor)),
+                      labelText: 'email',
+                      labelStyle:
+                          TextStyle(color: Theme.of(context).accentColor),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value.isEmpty || !value.contains('@')) {
+                        return 'verifier votre email';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _authData['email'] = value;
+                    },
+                  ),
+                _authMode == AuthMode.LogIn
+                    ? SizedBox(
+                        height: _deviceSize.height * 0.05,
+                      )
+                    : SizedBox(
+                        height: 10,
+                      ),
+                TextFormField(
+                  maxLines: 1,
+                  focusNode: _telFocusNode,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_passFocusNode);
+                  },
+                  textInputAction: TextInputAction.next,
+                  textAlign: TextAlign.end,
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)),
+                    labelText: 'Mobile number',
+                    prefixText: '  216+',
+                    labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value.length < 7) return 'verifier numero';
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['tel'] = value;
+                  },
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  onFieldSubmitted: (_) {
+                    if (_authMode == AuthMode.Register) {
+                      FocusScope.of(context).requestFocus(_confPassFocusNode);
+                    }
+                  },
+                  focusNode: _passFocusNode,
+                  textInputAction: _authMode == AuthMode.Register
+                      ? TextInputAction.next
+                      : TextInputAction.done,
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor)),
+                    labelText: 'mot de passe',
+                    labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  obscureText: true,
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value.isEmpty || value.length < 5) {
+                      return 'le password doit etre 6 caractere au minimum';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['password'] = value;
+                  },
+                ),
+                if (_authMode == AuthMode.LogIn)
+                  Container(
+                    margin: EdgeInsets.only(
+                        right: _deviceSize.width * 0.47,
+                        left: _deviceSize.width * 0.01),
+                    child: FlatButton(
+                        onPressed: () {},
+                        child: Text(
+                          '* mot de passe oublier?',
+                          style: TextStyle(color: Colors.red, fontSize: 10),
+                        )),
+                  ),
+                const SizedBox(height: 10),
+                if (_authMode == AuthMode.Register)
+                  TextFormField(
+                    focusNode: _confPassFocusNode,
+                    textInputAction: TextInputAction.done,
+                    enabled: _authMode == AuthMode.Register,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor)),
+                      labelText: 'confirmer le mot de passe',
+                      labelStyle:
+                          TextStyle(color: Theme.of(context).accentColor),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
+                    obscureText: true,
+                    validator: _authMode == AuthMode.Register
+                        ? (value) {
+                            if (value != _passwordController.text) {
+                              return 'c\'est n\'est pas le meme mot de passe';
+                            }
+                            return null;
+                          }
+                        : null,
+                  ),
+                SizedBox(
+                  height: 20,
+                ),
+                RaisedButton(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  color: Theme.of(context).accentColor,
+                  onPressed: () async {
+                    if (_authMode == AuthMode.Register) {
+                      if (!_formKey.currentState.validate()) {
+                        return;
+                      }
+                    }
+                    _formKey.currentState.save();
+                    setState(
+                      () {
+                        _isLoading = true;
+                      },
+                    );
+                    // await submit(_authMode, context, _authData);
+                    setState(
+                      () {
+                        _isLoading = false;
+                      },
+                    );
+                  },
+                  child: _isLoading
+                      ? CircularProgressIndicator()
+                      : Text(
+                          _authMode == AuthMode.LogIn ? 'login' : 'Register',
+                          style: TextStyle(
+                              color: Colors.white, letterSpacing: 1.3),
+                          textAlign: TextAlign.center,
+                        ),
+                ),
+              ],
+            ),
           ),
         ),
-        Container()
-      ],
-    ));
+      ),
+    );
   }
 }

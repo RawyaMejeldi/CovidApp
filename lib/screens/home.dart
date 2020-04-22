@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:telesuivi_covid_19/helpers/getColor.dart';
-import 'package:telesuivi_covid_19/widget/leftDuration.dart';
+import 'package:telesuivi_covid_19/widget/leftDuration.Dart';
 
 class Home extends StatelessWidget {
   @override
