@@ -1,11 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:telesuivi_covid_19/widget/loginClipper.dart';
+import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../widget/loginClipper.dart';
 import 'LoginScreen.dart';
 
 enum AuthMode { LogIn, Register }
 
-class LogInCard extends StatelessWidget {
+class LogInCard extends StatefulWidget {
+  @override
+  _LogInCardState createState() => _LogInCardState();
+}
+
+class _LogInCardState extends State<LogInCard> {
+  var _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,15 +34,12 @@ class LogInCard extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
         ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: ClipPath(
-            clipper: LightClipper(),
-            child: Container(
-              color: Colors.white,
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-            ),
+        ClipPath(
+          clipper: LightClipper(),
+          child: Container(
+            color: Colors.white,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
           ),
         ),
         Align(
@@ -115,26 +124,28 @@ class LogInCard extends StatelessWidget {
                         Navigator.pushNamed(context, LoginScreen.pageRoute,
                             arguments: AuthMode.LogIn);
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Theme.of(context).primaryColor,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black54,
-                                  blurRadius: 20,
-                                  offset: Offset(10, 10))
-                            ]),
-                        child: Text(
-                          'Login',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontFamily: 'Roboto',
-                              fontSize: 36,
-                              letterSpacing: 1.2,
-                              color: Theme.of(context).primaryColorLight),
-                        ),
-                      ),
+                      child: _isLoading
+                          ? Center(child: CircularProgressIndicator())
+                          : Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Theme.of(context).primaryColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black54,
+                                        blurRadius: 20,
+                                        offset: Offset(10, 10))
+                                  ]),
+                              child: Text(
+                                'Login',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontFamily: 'Roboto',
+                                    fontSize: 36,
+                                    letterSpacing: 1.2,
+                                    color: Theme.of(context).primaryColorLight),
+                              ),
+                            ),
                     )
                   ],
                 ),
@@ -142,7 +153,6 @@ class LogInCard extends StatelessWidget {
             ],
           ),
         ),
-        Container()
       ],
     ));
   }

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "75596029620",
+    "firebase_url": "https://telesuivi-covid-19.firebaseio.com",
+    "project_id": "telesuivi-covid-19",
+    "storage_bucket": "telesuivi-covid-19.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:75596029620:android:bd8943ba5d9f4d49b741e1",
+        "android_client_info": {
+          "package_name": "com.example.telesuivi_covid_19"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "75596029620-tvd9259ud5p019dbti4rnehqo2b8t4gt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKMa5phTbBZgiWgHVQcqozHBDY_73GhuQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "75596029620-tvd9259ud5p019dbti4rnehqo2b8t4gt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

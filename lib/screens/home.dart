@@ -14,7 +14,14 @@ class Home extends StatelessWidget {
               height: 300,
               width: double.infinity,
               child: CustomPaint(
-                child: Center(child: Text('10 days left',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 18,letterSpacing: 1.2 ),)),
+                child: Center(
+                    child: Text(
+                  '10 days left',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      letterSpacing: 1.2),
+                )),
                 foregroundPainter: LeftDuration(
                     bgColor: Colors.grey[200],
                     lineColor: getColor(context, 0.8),

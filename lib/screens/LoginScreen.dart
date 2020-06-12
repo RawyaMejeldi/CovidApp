@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:telesuivi_covid_19/screens/LoginCard.dart';
+import '../helpers/loginHelper.dart';
 
 class LoginScreen extends StatefulWidget {
   static const pageRoute = './loginScreen';
@@ -26,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
     'email': '',
     'password': '',
     'tel': '',
-    'nom': '',
+    'username': '',
   };
   bool _isLoading = false;
   final _telFocusNode = FocusNode();
@@ -34,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passFocusNode = FocusNode();
   final _confPassFocusNode = FocusNode();
   var init = false;
+
   @override
   void didChangeDependencies() {
     if (!init) _authMode = ModalRoute.of(context).settings.arguments;
@@ -45,7 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget build(BuildContext context) {
     final _deviceSize = MediaQuery.of(context).size;
+    final key=GlobalKey<ScaffoldState>();
     return Scaffold(
+      key:key,
       backgroundColor: Theme.of(context).primaryColor,
       body: Container(
         margin: const EdgeInsets.only(top: 10),
@@ -80,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontFamily: 'Roboto',
                           fontSize: 20,
                           height: 2,
-                          fontWeight: FontWeight.w100,
+                          fontWeight: FontWeight.w200,
                           color: Theme.of(context).primaryColorLight),
                     )
                   ],
@@ -90,8 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
+                      ClipOval(
                         child: Container(
                           height: 100,
                           width: 100,
@@ -121,7 +124,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     onFieldSubmitted: (_) {
                       FocusScope.of(context).requestFocus(_addresseFocusNode);
                     },
-                    enabled: _authMode == AuthMode.Register,
                     decoration: InputDecoration(
                       labelText: ' User name',
                       labelStyle:
@@ -138,47 +140,45 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     validator: (value) {
-                      if (value == null) return 'taper le nom';
+                      if (value.isEmpty) return 'taper le nom';
                       return null;
                     },
                     onSaved: (value) {
-                      _authData['nom'] = value;
+                      _authData['username'] = value;
                     },
                   ),
                 const SizedBox(height: 10),
-                if (_authMode == AuthMode.Register)
-                  TextFormField(
-                    onFieldSubmitted: (_) {
-                      FocusScope.of(context).requestFocus(_telFocusNode);
-                    },
-                    focusNode: _addresseFocusNode,
-                    textInputAction: TextInputAction.next,
-                    textAlign: TextAlign.end,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).primaryColor)),
-                      labelText: 'email',
-                      labelStyle:
-                          TextStyle(color: Theme.of(context).accentColor),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                TextFormField(
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_telFocusNode);
+                  },
+                  focusNode: _addresseFocusNode,
+                  textInputAction: TextInputAction.next,
+                  textAlign: TextAlign.start,
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor)),
+                    labelText: 'email',
+                    labelStyle: TextStyle(color: Theme.of(context).accentColor),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value.isEmpty || !value.contains('@')) {
-                        return 'verifier votre email';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _authData['email'] = value;
-                    },
                   ),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value.isEmpty || !value.contains('@')) {
+                      return 'verifier votre email';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['email'] = value;
+                  },
+                ),
                 _authMode == AuthMode.LogIn
                     ? SizedBox(
                         height: _deviceSize.height * 0.05,
@@ -186,35 +186,38 @@ class _LoginScreenState extends State<LoginScreen> {
                     : SizedBox(
                         height: 10,
                       ),
-                TextFormField(
-                  maxLines: 1,
-                  focusNode: _telFocusNode,
-                  onFieldSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_passFocusNode);
-                  },
-                  textInputAction: TextInputAction.next,
-                  textAlign: TextAlign.end,
-                  decoration: InputDecoration(
-                    fillColor: Colors.white,
-                    filled: true,
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)),
-                    labelText: 'Mobile number',
-                    prefixText: '  216+',
-                    labelStyle: TextStyle(color: Theme.of(context).accentColor),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.circular(20)),
+                if (_authMode == AuthMode.Register)
+                  TextFormField(
+                    maxLines: 1,
+                    focusNode: _telFocusNode,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_passFocusNode);
+                    },
+                    textInputAction: TextInputAction.next,
+                    textAlign: TextAlign.end,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                      labelText: 'Mobile number',
+                      prefixText: '  216+',
+                      prefixIcon: Icon(Icons.phone),
+                      labelStyle:
+                          TextStyle(color: Theme.of(context).accentColor),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value.length != 8) return 'verifier numero';
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _authData['tel'] = value;
+                    },
                   ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value.length < 7) return 'verifier numero';
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _authData['tel'] = value;
-                  },
-                ),
                 const SizedBox(height: 10),
                 TextFormField(
                   onFieldSubmitted: (_) {
@@ -299,6 +302,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   color: Theme.of(context).accentColor,
                   onPressed: () async {
+                    FocusScope.of(context).unfocus();
                     if (_authMode == AuthMode.Register) {
                       if (!_formKey.currentState.validate()) {
                         return;
@@ -310,7 +314,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         _isLoading = true;
                       },
                     );
-                    // await submit(_authMode, context, _authData);
+                    await submitAuthForm(
+                        authData: _authData,
+                        key: key,
+                        isLogin: _authMode == AuthMode.LogIn);
                     setState(
                       () {
                         _isLoading = false;
