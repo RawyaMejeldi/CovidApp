@@ -38,7 +38,6 @@ Future<void> submitAuthForm({
     if (err.message != null) {
       message = err.message;
     }
-
     key.currentState.showSnackBar(
       SnackBar(
         content: Text(message),
