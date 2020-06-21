@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:telesuivi_covid_19/screens/LoginCard.dart';
 import '../helpers/loginHelper.dart';
+import 'package:get_it/get_it.dart';
 
 class LoginScreen extends StatefulWidget {
   static const pageRoute = './loginScreen';
@@ -47,9 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget build(BuildContext context) {
     final _deviceSize = MediaQuery.of(context).size;
-    final key=GlobalKey<ScaffoldState>();
+    final key = GlobalKey<ScaffoldState>();
     return Scaffold(
-      key:key,
+      key: key,
       backgroundColor: Theme.of(context).primaryColor,
       body: Container(
         margin: const EdgeInsets.only(top: 10),
@@ -314,7 +315,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         _isLoading = true;
                       },
                     );
-                    await submitAuthForm(
+                    await getIt<Login>().submitAuthForm(
                         authData: _authData,
                         key: key,
                         isLogin: _authMode == AuthMode.LogIn);
