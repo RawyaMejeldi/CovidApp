@@ -47,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget build(BuildContext context) {
+   
     final _deviceSize = MediaQuery.of(context).size;
     final key = GlobalKey<ScaffoldState>();
     return Scaffold(
@@ -317,7 +318,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                    await submitAuthForm(
                         authData: _authData,
-                        key: key,
+                        context: context,
                         isLogin: _authMode == AuthMode.LogIn);
                     setState(
                       () {
