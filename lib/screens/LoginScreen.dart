@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:telesuivi_covid_19/screens/LoginCard.dart';
-import '../helpers/loginHelper.dart';
-import 'package:get_it/get_it.dart';
 
-class LoginScreen extends StatefulWidget {
+import '../helpers/loginHelper.dart';
+import 'LoginCard.dart';
+
+class LoginScreen extends StatefulWidget{
   static const pageRoute = './loginScreen';
 
   @override
@@ -315,7 +315,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         _isLoading = true;
                       },
                     );
-                    await getIt<Login>().submitAuthForm(
+                   await submitAuthForm(
                         authData: _authData,
                         key: key,
                         isLogin: _authMode == AuthMode.LogIn);
@@ -324,6 +324,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         _isLoading = false;
                       },
                     );
+                    Navigator.maybePop(context);
                   },
                   child: _isLoading
                       ? CircularProgressIndicator()

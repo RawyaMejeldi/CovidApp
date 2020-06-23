@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:telesuivi_covid_19/screens/aboutUs.dart';
-import 'package:telesuivi_covid_19/screens/home.dart';
-import 'package:telesuivi_covid_19/screens/information.dart';
-import 'package:telesuivi_covid_19/screens/yourLocation.dart';
+
+import '../screens/aboutUs.dart';
+import '../screens/home.dart';
+import '../screens/information.dart';
+import '../screens/yourLocation.dart';
 
 class MyDrawer extends StatelessWidget {
   @override

@@ -23,8 +23,9 @@ dependencies:
   firebase_storage: ^3.1.5
   cloud_firestore: ^0.13.6
   google_maps_flutter: ^0.5.28+1
-  get_it: ^4.0.2
-  
+  auto_size_text: ^2.1.0
+  hive: ^1.4.1+1
+
 
 
 

@@ -1,69 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:telesuivi_covid_19/widget/drawer.dart';
 
 import '../helpers/getColor.dart';
+import '../widget/drawer.dart';
 import '../widget/leftDuration.Dart';
-import 'aboutUs.dart';
-import 'information.dart';
-import 'yourLocation.dart';
+import 'package:hive/hive.dart';
+
+Future<dynamic> get lefDuration async {
+  var box = await Hive.box('user');
+  var start_date_iso = box.get('start_date');
+  // var start_date=DateTime.parse(start_date_iso);
+  return (start_date_iso);
+}
 
 class Home extends StatelessWidget {
   static const pageRoute = './Home';
   @override
   Widget build(BuildContext context) {
+    // var leftDuration=DateTime.now().subtract(Duration(days: star_date));
+    print(lefDuration);
+
     return Scaffold(
         drawer: MyDrawer(),
-        // drawer: Drawer(
-        //   child: Container(
-        //     padding: EdgeInsets.only(top: 30),
-        //     color: Theme.of(context).primaryColorLight,
-        //     child: Column(
-        //       crossAxisAlignment: CrossAxisAlignment.stretch,
-        //       children: <Widget>[
-        //         FlatButton(
-        //           color: Colors.white,
-        //           child: Text(
-        //             'your location',
-        //             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        //           ),
-        //           onPressed: () {
-        //             Navigator.of(context)
-        //                 .pushReplacementNamed(YourLocation.pageRoute);
-        //           },
-        //         ),
-        //         FlatButton(
-        //           color: Colors.white,
-        //           child: Text('Days Left',
-        //               style:
-        //                   TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-        //           onPressed: () {
-        //             Navigator.of(context).pushReplacementNamed(Home.pageRoute);
-        //           },
-        //         ),
-        //         FlatButton(
-        //           color: Colors.white,
-        //           child: Text('information abour Covid-19',
-        //               style:
-        //                   TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-        //           onPressed: () {
-        //             Navigator.of(context)
-        //                 .pushReplacementNamed(Information.pageRoute);
-        //           },
-        //         ),
-        //         FlatButton(
-        //           color: Colors.white,
-        //           child: Text('About us',
-        //               style:
-        //                   TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-        //           onPressed: () {
-        //             Navigator.of(context)
-        //                 .pushReplacementNamed(AboutUs.pageRoute);
-        //           },
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
         appBar: AppBar(title: Text('#Stay at home')),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
