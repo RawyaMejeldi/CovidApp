@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> submitAuthForm({
   @required bool isLogin,
@@ -13,7 +15,7 @@ Future<void> submitAuthForm({
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: titl == null ? Text('عذرا لقد حصل خطأ ') : Text(titl),
+        title: titl == null ? Text('Désole un errer ') : Text(titl),
         content: Text(message),
         actions: <Widget>[
           FlatButton(
@@ -36,10 +38,16 @@ Future<void> submitAuthForm({
         email: authData['email'].trim(),
         password: authData['password'],
       );
+      final userInfo = await Firestore.instance
+          .collection('users')
+          .document(authResult.user.uid)
+          .get();
+
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('start_date', userInfo.data['start_date']);
     } else {
-      await Hive.init('./');
-      var box = await Hive.openBox('user');
-      box.put('start_date', DateTime.now().toIso8601String());
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('start_date', DateTime.now().toIso8601String());
       authResult = await _auth.createUserWithEmailAndPassword(
         email: authData["email"].trim(),
         password: authData['password'],
@@ -60,7 +68,7 @@ Future<void> submitAuthForm({
     if (err.message != null) {
       message = err.message;
     }
-    _showErrorDialog(context:context,message: message,titl: 'errer');
+    _showErrorDialog(context: context, message: message, titl: 'errer');
   } catch (err) {
     print(err);
   }

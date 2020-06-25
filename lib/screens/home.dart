@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/getColor.dart';
 import '../widget/drawer.dart';
 import '../widget/leftDuration.Dart';
-import 'package:hive/hive.dart';
 
-Future<dynamic> get lefDuration async {
-  var box = await Hive.box('user');
-  var start_date_iso = box.get('start_date');
-  // var start_date=DateTime.parse(start_date_iso);
-  return (start_date_iso);
+Future<int> get lefDuration async {
+  final prefs = await SharedPreferences.getInstance();
+  var start_date_iso = prefs.getString('start_date');
+  var start_date = DateTime.parse(start_date_iso);
+  var difference = DateTime.now().difference(start_date).inDays;
+  var leftDuration = 14 - difference;
+  return leftDuration;
 }
 
 class Home extends StatelessWidget {
   static const pageRoute = './Home';
   @override
   Widget build(BuildContext context) {
-    // var leftDuration=DateTime.now().subtract(Duration(days: star_date));
-    print(lefDuration);
-
+    int left;
+    lefDuration.then((value) => left = value);
     return Scaffold(
         drawer: MyDrawer(),
         appBar: AppBar(title: Text('#Stay at home')),
@@ -58,20 +59,29 @@ class Home extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 15),
               height: 300,
               width: double.infinity,
-              child: CustomPaint(
-                child: Center(
-                    child: Text(
-                  '10 days left',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      letterSpacing: 1.2),
-                )),
-                foregroundPainter: LeftDuration(
-                    bgColor: Colors.grey[200],
-                    lineColor: getColor(context, 0.8),
-                    percent: 0.8,
-                    width: 15.0),
+              child: FutureBuilder(
+                future: lefDuration,
+                builder: (_, AsyncSnapshot<int> snapshot) {
+                  if (snapshot.hasData) {
+                    final duration=snapshot.data;
+                  return  CustomPaint(
+                      child: Center(
+                          child: Text(
+                        '$duration days left',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            letterSpacing: 1.2),
+                      )),
+                      foregroundPainter: LeftDuration(
+                          bgColor: Colors.grey[200],
+                          lineColor: getColor(context, duration / 14),
+                          percent: duration/ 14,
+                          width: 15.0),
+                    );
+                  } else
+                   return CircularProgressIndicator();
+                },
               ),
             )
           ],

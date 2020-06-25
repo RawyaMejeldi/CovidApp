@@ -24,7 +24,8 @@ dependencies:
   cloud_firestore: ^0.13.6
   google_maps_flutter: ^0.5.28+1
   auto_size_text: ^2.1.0
-  hive: ^1.4.1+1
+  shared_preferences: ^0.5.7+3
+
 
 
 
