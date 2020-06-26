@@ -1,8 +1,29 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:telesuivi_covid_19/widget/drawer.dart';
+import 'package:flutter_map_picker/flutter_map_picker.dart';
 
 class YourLocation extends StatelessWidget {
   static const pageRoute = './your_location';
+
+  Future<AreaPickerResult> showloc(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    var location = json.decode(prefs.getString('location'));
+    return await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AreaPickerScreen(
+                  googlePlacesApiKey: 'AIzaSyD1Qn83-DnCl2DOUuZTbe5MG2u9XjY_fiw',
+                  initialPosition: LatLng(location['lat'], location['long']),
+                  mainColor: Colors.purple,
+                  mapStrings: MapPickerStrings.english(),
+                  placeAutoCompleteLanguage: 'fr',
+                  // markerAsset: 'assets/images/icon_look_area.png',
+                )));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,9 +54,7 @@ class YourLocation extends StatelessWidget {
                 '#Stay_Home',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 17,
-                    color: Colors.grey),
+                    fontFamily: 'Roboto', fontSize: 17, color: Colors.grey),
               ),
             ],
           ),
@@ -66,6 +85,11 @@ class YourLocation extends StatelessWidget {
               ],
             ),
           ),
+          FutureBuilder(
+            future: showloc(context),
+            builder: (_, t) {
+            showloc(context);
+          })
         ],
       ),
     );

@@ -8,3 +8,5 @@ A new Flutter project.
  - enable email and password login in firebase
  - create a firestore database (optional: europe server)
  - add collection named 'users'
+ - add api key in androidManifest
+ 

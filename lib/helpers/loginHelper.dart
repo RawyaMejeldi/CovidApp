@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
 
 Future<void> submitAuthForm({
   @required bool isLogin,
@@ -46,8 +48,16 @@ Future<void> submitAuthForm({
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('start_date', userInfo.data['start_date']);
     } else {
+      LocationResult result = await showLocationPicker(
+          context, "AIzaSyD1Qn83-DnCl2DOUuZTbe5MG2u9XjY_fiw");
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('start_date', DateTime.now().toIso8601String());
+      prefs.setString(
+          'location',
+          json.encode({
+            'lat': result.latLng.latitude,
+            'long': result.latLng.longitude
+          }));
       authResult = await _auth.createUserWithEmailAndPassword(
         email: authData["email"].trim(),
         password: authData['password'],
@@ -60,7 +70,9 @@ Future<void> submitAuthForm({
         'username': authData['username'].trim(),
         'email': authData['email'].trim(),
         'tel': authData['tel'].trim(),
-        'start_date': DateTime.now().toIso8601String()
+        'start_date': DateTime.now().toIso8601String(),
+        'lat': result.latLng.latitude,
+        'long': result.latLng.longitude
       });
     }
   } on PlatformException catch (err) {

@@ -62,12 +62,14 @@ class Home extends StatelessWidget {
               child: FutureBuilder(
                 future: lefDuration,
                 builder: (_, AsyncSnapshot<int> snapshot) {
-                  if (snapshot.hasData) {
-                    final duration=snapshot.data;
-                  return  CustomPaint(
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else {
+                    final duration = snapshot.data;
+                    return CustomPaint(
                       child: Center(
                           child: Text(
-                        '$duration days left',
+                        '${duration.toString()} days left',
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
@@ -76,11 +78,10 @@ class Home extends StatelessWidget {
                       foregroundPainter: LeftDuration(
                           bgColor: Colors.grey[200],
                           lineColor: getColor(context, duration / 14),
-                          percent: duration/ 14,
+                          percent: duration / 14,
                           width: 15.0),
                     );
-                  } else
-                   return CircularProgressIndicator();
+                  }
                 },
               ),
             )

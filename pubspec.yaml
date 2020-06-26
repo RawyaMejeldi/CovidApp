@@ -20,11 +20,12 @@ dependencies:
   flutter:
     sdk: flutter
   firebase_auth: ^0.16.0
-  firebase_storage: ^3.1.5
   cloud_firestore: ^0.13.6
-  google_maps_flutter: ^0.5.28+1
+  google_map_location_picker: ^3.3.3
   auto_size_text: ^2.1.0
   shared_preferences: ^0.5.7+3
+  flutter_map_picker: ^0.1.2
+
 
 
 
