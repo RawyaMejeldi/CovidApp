@@ -1,27 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_google_maps/flutter_google_maps.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:telesuivi_covid_19/widget/drawer.dart';
-import 'package:flutter_map_picker/flutter_map_picker.dart';
 
 class YourLocation extends StatelessWidget {
   static const pageRoute = './your_location';
 
-  Future<AreaPickerResult> showloc(BuildContext context) async {
+  Future<GeoCoord> get getcoord async {
     final prefs = await SharedPreferences.getInstance();
     var location = json.decode(prefs.getString('location'));
-    return await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => AreaPickerScreen(
-                  googlePlacesApiKey: 'AIzaSyD1Qn83-DnCl2DOUuZTbe5MG2u9XjY_fiw',
-                  initialPosition: LatLng(location['lat'], location['long']),
-                  mainColor: Colors.purple,
-                  mapStrings: MapPickerStrings.english(),
-                  placeAutoCompleteLanguage: 'fr',
-                  // markerAsset: 'assets/images/icon_look_area.png',
-                )));
+    return GeoCoord(location['lat'], location['long']);
   }
 
   @override
@@ -85,11 +74,20 @@ class YourLocation extends StatelessWidget {
               ],
             ),
           ),
-          FutureBuilder(
-            future: showloc(context),
-            builder: (_, t) {
-            showloc(context);
-          })
+          Container(
+            height: 400,
+            width: 400,
+            child: FutureBuilder(
+                future: getcoord,
+                builder: (_, t) => t.connectionState == ConnectionState.waiting
+                    ? CircularProgressIndicator()
+                    : GoogleMap(
+                        interactive: false,
+                        initialZoom: 18,
+                        mapType: MapType.satellite,
+                        initialPosition: t.data,
+                      )),
+          )
         ],
       ),
     );
