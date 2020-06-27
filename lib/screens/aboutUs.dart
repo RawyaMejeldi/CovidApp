@@ -1,11 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:telesuivi_covid_19/widget/drawer.dart';
+import '../helpers/loacate.dart';
 
 class AboutUs extends StatelessWidget {
   static const pageRoute = "./AboutUs";
   @override
   Widget build(BuildContext context) {
+    locate();
     return Scaffold(
       drawer: MyDrawer(),
       appBar: AppBar(title: Text('About US')),
@@ -66,12 +68,13 @@ class AboutUs extends StatelessWidget {
               ],
             ),
           ),
-
           Container(
             margin: const EdgeInsets.only(top: 20),
             padding: const EdgeInsets.all(8.0),
             child: AutoSizeText(
-                "We are Electronics engineering  students: Rawya Mejeldi and Fatma Khedhri. We made this app for you. It aims to help you in this sensitive period. So be helpful and aware.Don't threaten the safety of people around you.Don't spread the virus.",minFontSize: 20,),
+              "We are Electronics engineering  students: Rawya Mejeldi and Fatma Khedhri. We made this app for you. It aims to help you in this sensitive period. So be helpful and aware.Don't threaten the safety of people around you.Don't spread the virus.",
+              minFontSize: 20,
+            ),
           ),
         ],
       ),

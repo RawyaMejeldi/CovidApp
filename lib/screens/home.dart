@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/getColor.dart';
 import '../widget/drawer.dart';
 import '../widget/leftDuration.Dart';
+import '../helpers/loacate.dart';
 
 Future<int> get lefDuration async {
   final prefs = await SharedPreferences.getInstance();
@@ -18,6 +19,7 @@ class Home extends StatelessWidget {
   static const pageRoute = './Home';
   @override
   Widget build(BuildContext context) {
+    locate();
     int left;
     lefDuration.then((value) => left = value);
     return Scaffold(
