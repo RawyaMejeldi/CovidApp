@@ -25,6 +25,7 @@ dependencies:
   auto_size_text: ^2.1.0
   shared_preferences: ^0.5.7+3
   flutter_google_maps: ^3.8.0
+  geolocator: ^5.3.2+2
 
 
 
