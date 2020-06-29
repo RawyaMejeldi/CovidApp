@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../widget/loginClipper.dart';
 import 'LoginScreen.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
 
 enum AuthMode { LogIn, Register }
 
@@ -10,6 +9,7 @@ class LogInCard extends StatefulWidget {
   @override
   _LogInCardState createState() => _LogInCardState();
 }
+
 // AIzaSyD1Qn83-DnCl2DOUuZTbe5MG2u9XjY_fiw
 class _LogInCardState extends State<LogInCard> {
   var _isLoading = false;

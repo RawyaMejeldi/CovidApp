@@ -8,9 +8,7 @@ import 'screens/home.dart';
 import 'screens/information.dart';
 import 'screens/yourLocation.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override

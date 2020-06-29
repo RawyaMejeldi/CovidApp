@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,11 +46,17 @@ Future<void> submitAuthForm({
 
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('start_date', userInfo.data['start_date']);
+      prefs.setString(
+          'location',
+          json.encode({
+            'lat': userInfo.data['lat'],
+            'long': userInfo.data['long'],
+          }));
+      //----now creating a new account------//
     } else {
       LocationResult result = await showLocationPicker(
           context, "AIzaSyD1Qn83-DnCl2DOUuZTbe5MG2u9XjY_fiw");
       final prefs = await SharedPreferences.getInstance();
-      prefs.setString('start_date', DateTime.now().toIso8601String());
       prefs.setString(
           'location',
           json.encode({

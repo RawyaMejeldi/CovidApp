@@ -1,17 +1,16 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
-import 'package:telesuivi_covid_19/widget/drawer.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import '../helpers/loacate.dart';
+import 'package:flutter/material.dart';
+
+import '../widget/drawer.dart';
 
 class Information extends StatelessWidget {
-  var myGroup = AutoSizeGroup();
+  final myGroup = AutoSizeGroup();
 
   static const pageRoute = "./info";
   @override
   Widget build(BuildContext context) {
-    locate();
     return Scaffold(
       drawer: MyDrawer(),
       appBar: AppBar(title: Text('Information ')),
