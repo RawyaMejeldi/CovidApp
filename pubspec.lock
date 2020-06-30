@@ -188,13 +188,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_geofence:
-    dependency: "direct main"
-    description:
-      name: flutter_geofence
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
   flutter_google_maps:
     dependency: "direct main"
     description:
@@ -238,6 +231,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  geolocation:
+    dependency: "direct main"
+    description:
+      name: geolocation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.2"
   geolocator:
     dependency: transitive
     description:
@@ -364,6 +364,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0+1"
+  maps_toolkit:
+    dependency: "direct main"
+    description:
+      name: maps_toolkit
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0+1"
   matcher:
     dependency: transitive
     description:
@@ -530,6 +537,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  streams_channel:
+    dependency: transitive
+    description:
+      name: streams_channel
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   string_scanner:
     dependency: transitive
     description:

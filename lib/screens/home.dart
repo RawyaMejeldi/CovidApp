@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_geofence/geofence.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:geolocation/geolocation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:maps_toolkit/maps_toolkit.dart';
 
 import '../helpers/getColor.dart';
 import '../widget/drawer.dart';
@@ -37,9 +39,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     initPlatformState();
-    track();
-
-// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS =
@@ -50,53 +49,95 @@ class _HomeState extends State<Home> {
         onSelectNotification: null);
   }
 
-  void track() {
-    print(':::::::::::::start tracking:::::::::::::');
-    Geofence.startListening(GeolocationEvent.entry, (entry) {
-      print('::::::::::::::::::::::::::went back:::::::::::::::::::::');
-      scheduleNotification("merci de revenir", "Welcome to: ${entry.id}");
-    });
-    Geofence.startListening(GeolocationEvent.exit, (entry) async {
-      print('::::::::::::::::::::::out of the fence:::::::::::::::::::::::');
-      final _auth = FirebaseAuth.instance;
-      var authRes = await _auth.currentUser();
-      print('adding to DB');
-      await Firestore.instance
-          .collection('Users_break_rules')
-          .document(authRes.uid)
-          .setData({'lat': entry.latitude, 'long': entry.longitude});
-      scheduleNotification(
-          "SVP de retourner vers la zone definie", "Urgence: ${entry.id}");
-    });
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-    print(':::::::::::::::initialization location:::::::::::::::::::');
-    Geofence.initialize();
-    Geofence.requestPermissions();
+    await Geolocation.requestLocationPermission(
+      permission: const LocationPermission(
+        android: LocationPermissionAndroid.fine,
+        ios: LocationPermissionIOS.always,
+      ),
+      openSettingsIfDenied: true,
+    );
+    final GeolocationResult result = await Geolocation.isLocationOperational();
+    if (result.isSuccessful) {
+      // location service is enabled, and location permission is granted
+      scheduleNotification(
+          "GPS est activer", "votre location est en cours de suivis");
+    } else {
+      // location service is not enabled, restricted, or location permission is denied
+      scheduleNotification(
+          "GPS est desactiver", "avertissement , vous dever activer le gps");
+    }
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString('location');
     var location = jsonDecode(jsonString);
     print('::::::::::::printing location:::::::::::::');
     print(location);
-    Geofence.addGeolocation(
-            Geolocation(
-                latitude: location['lat'],
-                longitude: location['long'],
-                radius: 50.0,
-                id: 'home'),
-            GeolocationEvent.exit)
-        .then((onValue) {
-      print('::::::::::::::::::::::GEO added::::::::::::::::::::');
-      scheduleNotification(
-          "GPS est activer", "votre location est en cours de suivis");
-    }).catchError((error) {
-      print("failed with $error");
+    print(':::::::::::::::initialization location:::::::::::::::::::');
+    Geolocation.locationUpdates(
+      accuracy: LocationAccuracy.best,
+      displacementFilter: 10.0, // in meters
+      inBackground:
+          true, // by default, location updates will pause when app is inactive (in background). Set to `true` to continue updates in background.
+    ).listen((result) async {
+      if (result.isSuccessful) {
+        double lat = result.location.latitude;
+        double lng = result.location.longitude;
+        num distanceBetweenPoints = SphericalUtil.computeDistanceBetween(
+            LatLng(lat, lng), LatLng(location['lat'], location['long']));
+        if (distanceBetweenPoints > 200) {
+          print(
+              '::::::::::::::::::::::out of the fence:::::::::::::::::::::::');
+          final _auth = FirebaseAuth.instance;
+          var authRes = await _auth.currentUser();
+          print('adding to DB');
+          await Firestore.instance
+              .collection('Users_break_rules')
+              .document(authRes.uid)
+              .setData({
+            'nom': authRes.displayName,
+            'phone': authRes.email,
+            'lat': result.location.latitude,
+            'long': result.location.longitude
+          });
+          scheduleNotification(
+              "SVP de retourner vers la zone definie", "Urgence");
+        }
+      } else {
+        switch (result.error.type) {
+          case GeolocationResultErrorType.runtime:
+            // runtime error, check result.error.message
+            break;
+          case GeolocationResultErrorType.locationNotFound:
+            // location request did not return any result
+            break;
+          case GeolocationResultErrorType.serviceDisabled:
+            // location services disabled on device
+            // might be that GPS is turned off, or parental control (android)
+            break;
+          case GeolocationResultErrorType.permissionNotGranted:
+            // location has not been requested yet
+            // app must request permission in order to access the location
+            break;
+          case GeolocationResultErrorType.permissionDenied:
+            // user denied the location permission for the app
+            // rejection is final on iOS, and can be on Android if user checks `don't ask again`
+            // user will need to manually allow the app from the settings, see requestLocationPermission(openSettingsIfDenied: true)
+            break;
+          case GeolocationResultErrorType.playServicesUnavailable:
+            // android only
+            // result.error.additionalInfo contains more details on the play services error
+            switch (
+                result.error.additionalInfo as GeolocationAndroidPlayServices) {
+              // do something, like showing a dialog inviting the user to install/update play services
+              case GeolocationAndroidPlayServices.missing:
+              case GeolocationAndroidPlayServices.updating:
+              case GeolocationAndroidPlayServices.versionUpdateRequired:
+              case GeolocationAndroidPlayServices.disabled:
+              case GeolocationAndroidPlayServices.invalid:
+            }
+            break;
+        }
+      }
     });
   }
 

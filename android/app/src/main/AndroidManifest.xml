@@ -16,10 +16,6 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="telesuivi_covid_19"
         android:icon="@mipmap/ic_launcher">
-        <receiver android:name="com.intivoto.geofence.GeofenceBroadcastReceiver"
-        android:enabled="true" android:exported="true"/>
-        <service android:name="com.intivoto.geofence.GeofencePlugin"
-        android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
