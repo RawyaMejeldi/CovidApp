@@ -115,7 +115,7 @@ class _HomeState extends State<Home> {
             // might be that GPS is turned off, or parental control (android)
             break;
           case GeolocationResultErrorType.permissionNotGranted:
-            // location has not been requested yet
+            // location has not been requested ye
             // app must request permission in order to access the location
             break;
           case GeolocationResultErrorType.permissionDenied:
